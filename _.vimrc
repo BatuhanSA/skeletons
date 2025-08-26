@@ -7,6 +7,7 @@ set nocompatible
 
 " Indentation
 set autoindent
+set smartindent
 set expandtab
 set smarttab
 set shiftround
@@ -25,7 +26,7 @@ set viminfo='50,\"1000,%
 set history=5000
 
 " Defualt clipboard is systems clipboard.
-set clipboard=unnamedplus
+set clipboard=unnamed
 
 " Highlight the line the cursosrs is at.
 set cursorline
@@ -57,12 +58,16 @@ set modelines=0
 
 "Ensures your file ends with a newline.
 set fixeol
+
+set splitright
+
 """
 """ VISIUAL
 """
 
 " Colors on.
 syntax on
+filetype plugin on
 
 " Hilight search results,
 " but use control-/ (defined below) to disable the highlight until the next search.
@@ -96,18 +101,6 @@ set number
 " Show the filename in the window.
 set title
 
-" Highlight whitespace at the end of lines.
-" 1) Define a highlight group (tweak color if you like)
-highlight ExtraWhitespace ctermbg=darkred guibg=#552222
-
-" 2) Pattern:
-"    - \s\+$                  → trailing spaces at end of line
-"    - \S\zs\s\+\ze[)\]}.,;]  → spaces AFTER a non-space, just before ) ] } , . ;
-let g:extra_ws_pat = '\s\+$\|\S\zs\s\+\ze[)\]}.,;]'
-
-" 3) Apply it (matchadd survives many redraws better than :match)
-call matchadd('ExtraWhitespace', g:extra_ws_pat, 10)
-
 """
 """ Mappings
 """
@@ -115,64 +108,59 @@ call matchadd('ExtraWhitespace', g:extra_ws_pat, 10)
 " spacebar as leader
 let mapleader=" "
 
+tnoremap <Esc> <C-\><C-n>
+
+nnoremap <leader>t :vert term<CR>
 nnoremap <C-l> :nohlsearch<CR>
+nnoremap y "+y
+nnoremap yy "+yy
 
 " If syntax break (or filetype changes), use F12 to redo coloring.
 noremap <F12> <Esc>:syntax sync fromstart<CR>
 inoremap <F12> <C-o>:syntax sync fromstart<CR>
 
-"" Use F7 to put a visual bar at 80 characters, use F8 to clear.
-":map <F7> :set colorcolumn=80<cr>
-":map <F8> :set colorcolumn=0<cr>
+" Use F7 to put a visual bar at 80 characters, use F8 to clear.
+:map <F7> :set colorcolumn=80<cr>
+:map <F8> :set colorcolumn=0<cr>
 
-"" Use <shift>-F7 to put a visual bar at 100 characters, use <shift>-F8 to clear.
-":map <S-F7> :set colorcolumn=100<cr>
-":map <S-F8> :set colorcolumn=0<cr>
+" Use <shift>-F7 to put a visual bar at 100 characters, use <shift>-F8 to clear.
+:map <S-F7> :set colorcolumn=100<cr>
+:map <S-F8> :set colorcolumn=0<cr>
 
 " Use F9 to toggle underline on the cursor's line.
 :map <F9> :set cul!<cr>
 
-" Spell check!
-:map <F4> :set spell!<cr>
-
 " Toggle paste mode.
 :map <F3> :set paste!<cr>
 
-" Use Option (Alt) + arrow keys to move between splits
+" Use Option (space) + arrow keys to move between splits
 nnoremap <Leader><Left> <C-w>h
 nnoremap <Leader><Right> <C-w>l
 nnoremap <Leader><Up> <C-w>j
 nnoremap <Leader><Down> <C-w>k
+nnoremap <leader>s :set spell!<cr>
+nnoremap <leader>z z=
 
 " Don't highlight line comments in JSON.
 autocmd FileType json syntax match Comment +\/\/.\+$+
 autocmd FileType json syntax match Comment +#.\+$+
-" PLUG IN "
+
+
+"""
+""" Plugins
+"""
 
 call plug#begin('~/.vim/plugged')
-
-" coc.nvim for LSP and autocomplete
-
-" Trying to quit autocomplete
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'preservim/nerdtree'
 Plug 'morhetz/gruvbox'
-
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-
 Plug 'tpope/vim-fugitive'
-Plug 'preservim/nerdcommenter'
 call plug#end()
-
-filetype plugin on
 
 " colorscheme default
 set background=dark
 colorscheme gruvbox
 
-" Use Gruvbox theme with Airline
-let g:airline_theme = 'gruvbox'
-" Show tabline (buffers/tabs at top)
-let g:airline#extensions#tabline#enabled = 1
+highlight SpellBad ctermfg=Red
 
-" highlight! link CocInlayHint Comment
